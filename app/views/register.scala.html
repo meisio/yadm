@@ -1,0 +1,60 @@
+@(registerForm: Form[User])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("register"){
+
+	<div class="row">
+		<div class="span10">
+			<div class="span2"></div>
+			<div class="span6">
+				@helper.form(routes.UserController.register){
+					 <fieldset>
+			            <legend>Register</legend>
+			            
+			            @if(flash.contains("error")){
+							<p class="alert alert-error">
+			                    @flash.get("error")
+			                </p>
+						}
+			            
+			            @if(flash.contains("info")){
+							<p class="alert alert-info">
+			                    @flash.get("info")
+			                </p>
+						}
+			            
+			            @inputText(
+			                registerForm("firstname"), '_label -> "Firstname", 'class -> "span6"
+			            )
+			            
+			            @inputText(
+			                registerForm("lastname"), '_label -> "Lastname", 'class -> "span6"
+			            )
+			            
+			            @inputText(
+			                registerForm("email"), '_label -> "E-Mail", 'class -> "span6"
+			            )
+			            
+			            @inputPassword(
+			                registerForm("password"), '_label -> "Password", 'class -> "span6"
+			            )
+			            
+			            @inputPassword(
+			                registerForm("passwordConfirm"), 'class -> "span6", 
+			                '_label -> "Confirm Password",
+			                '_error -> registerForm.error("password")
+			            )
+			        </fieldset>
+			        
+			        <div class="actions">
+			            <a href="@routes.Application.index" class="btn btn-large">Cancel</a>
+			            <input type="submit" class="btn btn-large btn-primary" value="Register">
+			        </div>
+				}
+			</div>
+			<div class="span3"></div>
+		</div>
+	</div>
+}

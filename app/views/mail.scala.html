@@ -1,0 +1,133 @@
+@(addMailForm: Form[FormMail])(mails: List[Mail])(domains: List[Domain])(validTime: List[String])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("mail"){
+<div class="row">
+  <div class="span*">
+  	<div class="row">
+  		<div class="span10">
+  			<div class="span1"></div>
+  			<div class="span8">
+  				@flashinfo()
+		  		@helper.form(routes.MailController.add(), 'class->"form-horizontal") {
+					<div class="input-prepend input-append">
+			        <fieldset>
+			            <legend>Create Mail-Address</legend>
+			            
+			            <input value='@addMailForm("user").value' class="span3" type="text" name="user" id="appendedInput">
+			            <span class="add-on">&#64;</span>
+			            <select class="span2" name="host">
+			            	@domains.map { domain =>
+			            		<option>@domain.name</option>
+			            	}
+			            </select>
+			            <button type="submit" class="btn" name="generate">Generate</button>
+			            <select class="span1" name="expires">
+			            	@validTime.map { validTime =>
+			            		<option>@validTime</option>
+			            	}
+			            </select>
+				        <button type="submit" class="btn" name="create">Create</button>
+					</fieldset>
+					</div>
+		        }
+	        </div>
+	        <div class="span1"></div>
+        </div>
+  	</div>
+
+    <div class="row">
+      <div class="span10">
+      		 <table class="table table-bordered">
+            <thead>
+                <tr>
+                	<th>Mail ID</th>
+                	<th>Address</th>
+                	<th>Expires</th>
+                	<th>Options</th>
+                </tr>
+            </thead>
+            <tbody>
+
+				@mails.map { mail =>
+                    <tr>
+                        <td>
+                        	@mail.id
+                        </td>
+                        <td>
+                            @mail.address&#64;@mail.domain.name
+                        </td>
+                        <td>
+                        	@if(mail.expires == new java.sql.Timestamp(3600)){
+                        		@mail.expires
+                        	}else{
+                            	unlimited
+                            }
+                        </td>
+                        <td>
+                        	@helper.form(routes.MailController.remove(mail.id)) {
+                        		<button type="submit" class="btn" name="remove"><p class="icon-remove"></p></button>
+								<!-- <a data-toggle="modal" href="#" class="btn btn-primary btn-large">Launch demo modal</a> -->
+								<button type="button" data-toggle="modal" class="btn" data-target="#renameusermail"><p class="icon-edit"></button>
+								<button type="button" data-toggle="modal" class="btn" data-target="#example"><p class="icon-time"></button>
+                        		<!-- <button type="submit" class="btn" name="extend"></button> -->
+                        	}
+                        </td>
+                    </tr>
+                
+                				<div id="example" class="modal hide fade in" style="display: none; ">
+						            <div class="modal-header">
+						              <a class="close" data-dismiss="modal">X</a>
+						              <h3>Extend the expiration time</h3>
+						            </div>
+						            @helper.form(routes.MailController.updateExpTime(mail.id)) {
+						            <div class="modal-body">
+						            	<span>Expires on @mail.expires</span>
+						            	<p>Expiration Time:</p>
+										<select class="span1" name="expires">
+							            	@validTime.map { validTime =>
+							            		<option>@validTime</option>
+							            	}
+							            </select>
+						            </div>
+						            <div class="modal-footer">
+						            	<button type="submit" class="btn btn-success" name="generate">Submit</button>
+										<a href="#" class="btn" data-dismiss="modal">Close</a>
+						            </div>
+						            }
+						        </div>
+						        
+						        <div id="renameusermail" class="modal hide fade in" style="display: none; ">
+						            <div class="modal-header">
+						              <a class="close" data-dismiss="modal">X</a>
+						              <h3>Rename Mail-Address</h3>
+						            </div>
+						            @helper.form(routes.MailController.updateName(mail.id)) {
+						            <div class="modal-body">
+							            <div class="input-prepend input-append">
+							            	<input value='@mail.address' class="span3" type="text" name="user" id="appendedInput">
+				            				<span class="add-on">&#64;</span>
+				            				<input value='@mail.domain.name' class="span3 uneditable-input" id="disabledInput" type="text" name="host" disabled>
+							            </div>
+						            </div>
+						            <div class="modal-footer">
+						            	<button type="submit" class="btn btn-success" name="generate">Submit</button>
+										<a href="#" class="btn" data-dismiss="modal">Close</a>
+						            </div>
+						            }
+						        </div>
+                }
+
+            </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+}
+
+<script type="text/javascript">
+
+</script>

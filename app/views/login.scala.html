@@ -1,0 +1,30 @@
+@(formLogin: Form[FormLogin])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("login"){
+
+	<div class="row">
+		<div class="span10">
+			<div class="span2"></div>
+			<div class="span6">
+				@flashinfo()
+		        @helper.form(routes.UserController.login) {
+		        	<fieldset>
+		        		<legend>Login</legend>
+		        		<label>E-Mail</label>
+						<input value='@formLogin("username").value' class="span6" type="text" name="username" id="appendedInput">
+						<label>Password <a href="@routes.Application.forgotpassword" >(Forgot Password)</a></label>
+						<input class="span6" type="password" name="password" id="appendedInput">
+					</fieldset>
+					
+					<div class="actions">
+		            	<input type="submit" class="btn btn-medium btn-primary" value="Login">
+		        	</div>
+		        }
+			</div>
+			<div class="span2"></div>
+		</div>
+	</div>
+}

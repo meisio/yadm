@@ -2,8 +2,27 @@
 # This file defines all application routes (Higher priority routes first)
 # ~~~~
 
-# Home page
-GET     /                           controllers.Application.index()
+# Application
+GET     /                       controllers.Application.index()
+GET		/login					controllers.Application.login()
+GET		/forgotpassword			controllers.Application.forgotpassword()
+GET		/register				controllers.Application.register()
+
+# Mail
+GET		/mail						controllers.MailController.show()
+POST	/mail						controllers.MailController.add()
+POST	/mail/:id/update/name		controllers.MailController.updateName(id: Long)
+POST	/mail/:id/update/expTime	controllers.MailController.updateExpTime(id: Long)
+POST	/mail/:id/remove			controllers.MailController.remove(id: Long)
+
+# User
+GET		/user					controllers.UserController.show()
+GET		/logout					controllers.UserController.logout()
+POST	/user/register			controllers.UserController.register()
+POST	/user/login				controllers.UserController.login()
+POST	/user/unregister		controllers.UserController.unregister()
+POST	/user/update			controllers.UserController.update()
+POST	/user/respw				controllers.UserController.resetPassword()
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)

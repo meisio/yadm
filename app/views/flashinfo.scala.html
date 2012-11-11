@@ -1,0 +1,9 @@
+@if(flash.contains("error")) { 
+	<p class="alert alert-error">@flash.get("error")</p>
+}
+@if(flash.contains("success")) { 
+	<p class="alert alert-success">@flash.get("success")</p>
+}
+@if(flash.contains("info")) { 
+	<p class="alert alert-info">@flash.get("info")</p>
+}

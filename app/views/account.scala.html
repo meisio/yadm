@@ -1,0 +1,72 @@
+@(accountForm: Form[FormAccount])
+
+@import helper._
+@import helper.twitterBootstrap._
+
+@main("account"){
+	<div class="row">
+	<div class="span10">
+	<div class="span1"></div>
+	<div class="span5">
+	@helper.form(routes.UserController.update) {
+        <fieldset>
+            <legend>User Account</legend>
+			
+			@if(flash.contains("error")){
+				<p class="alert alert-error">
+					@flash.get("error")
+				</p>
+			}
+			            
+			@if(flash.contains("info")){
+				<p class="alert alert-info">
+			    	@flash.get("info")
+				</p>
+			}
+			            
+            <label>Firstname</label>
+            <input value='@accountForm("firstname").value' class="span3 uneditable-input" id="disabledInput" type="text" name="firstname" disabled>
+            <label>Lastname</label>
+            <input value='@accountForm("lastname").value' class="span3 uneditable-input" id="disabledInput" type="text" name="lastname" disabled>
+      
+            @inputText(
+				accountForm("email"), '_label -> "E-Mail"
+            )
+            
+            @inputPassword(
+            	accountForm("oldpassword"), '_label -> "Current Password"
+            )
+            
+            @inputPassword(
+                accountForm("newpassword"), '_label -> "New Password"
+            )
+            
+            @inputPassword(
+                accountForm("passwordConfirm"), 
+                '_label -> "Repeat new Password",
+                '_error -> accountForm.error("newpassword")
+            )
+            
+        </fieldset>
+        
+        <div class="actions">
+            <input type="submit" class="btn btn-large btn-primary" value="Change">
+        </div>
+	}
+	</div>
+	
+	<div class="span3">
+	@helper.form(routes.UserController.unregister) {
+		<fieldset>
+        	<legend>Unregister</legend>
+        </fieldset>
+        <p>If you like to unregister, please click on the button bellow</p>
+        <div class="actions">
+            <input type="submit" class="btn btn-large btn-danger" value="Unregister">
+        </div>
+	}
+	</div>
+	<div class="span1"></div>
+	</div>
+	</div>
+}

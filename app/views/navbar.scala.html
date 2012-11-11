@@ -1,0 +1,37 @@
+@(page: String)
+
+<ul class="nav nav-pills pull-right">
+	@if(page=="index"){
+		<li class="active"><a href="@routes.Application.index">Home</a></li>
+	} else {
+		<li><a href="@routes.Application.index">Home</a></li>
+	}
+
+    @if(session.get("id") != null){
+		@if(page=="mail"){
+			<li class="active"><a href='@routes.MailController.show'>Mail</a></li>
+		} else {
+			<li><a href='@routes.MailController.show'>Mail</a></li>
+		}
+
+		@if(page=="account"){
+			<li class="active"><a href="@routes.UserController.show">Account</a></li>
+		} else {
+			<li><a href="@routes.UserController.show">Account</a></li>
+		}
+
+	<li><a href="@routes.UserController.logout">Logout</a></li>
+	} else {
+		@if(page=="login"){
+			<li class="active"><a href="@routes.Application.login">Login</a></li>
+		} else {
+			<li><a href="@routes.Application.login">Login</a></li>
+		}
+		
+		@if(page=="register"){
+			<li class="active"><a href="@routes.Application.register">Regiser</a></li>
+		} else {
+			<li><a href="@routes.Application.register">Regiser</a></li>
+		}
+	}
+</ul>
