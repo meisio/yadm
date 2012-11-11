@@ -86,4 +86,17 @@ public class Mail {
 			return null;
 		}
 	}
+
+	/**
+	 * TODO: Get unvalied mails from sql query.
+	 * @return 
+	 * 
+	 * @return
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<Mail> getMails() {
+		return JPA.em("default")
+				.createQuery( "from Mail m " )
+		   		.getResultList();
+	}
 }

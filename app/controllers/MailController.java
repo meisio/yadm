@@ -4,11 +4,16 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.EntityManager;
+
+import org.joda.time.DateTime;
+
 import models.Domain;
 import models.FormMail;
 import models.Mail;
 import models.User;
 import play.data.Form;
+import play.db.jpa.JPA;
 import play.db.jpa.Transactional;
 import play.mvc.Controller;
 import play.mvc.Result;
@@ -28,6 +33,20 @@ public class MailController extends Controller{
 	private static final int maxTry = 10;
 	private static List<String> validTime = createValidationTime();
 	
+	public static Thread mailChecker = new Thread(new Runnable() {
+		
+		@Override
+		@Transactional
+		public void run() {
+			checkValidMail();
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	});
+		
 	/**
 	 * Show the mail control page.
 	 * 
@@ -39,8 +58,9 @@ public class MailController extends Controller{
 	}
 	
 	/**
+	 * This method adds a new mail.
 	 * 
-	 * @return
+	 * @return {@link Result}
 	 */
 	@Transactional
 	public static Result add(){
@@ -64,9 +84,10 @@ public class MailController extends Controller{
 	}
 		
 	/**
+	 * This method removes a mail.
 	 * 
-	 * @param mailId
-	 * @return
+	 * @param mailId - the mail id
+	 * @return {@link Result}
 	 */
 	@Transactional
 	public static Result remove(Long mailId){
@@ -83,9 +104,10 @@ public class MailController extends Controller{
 	}
 	
 	/**
+	 * This method updates the user part of a mail.
 	 * 
-	 * @param mailId
-	 * @return
+	 * @param mailId - the mail id
+	 * @return {@link Result}
 	 */
 	@Transactional
 	public static Result updateName(Long mailId){
@@ -121,9 +143,10 @@ public class MailController extends Controller{
 	}
 	
 	/**
+	 * This method updates the expiration time.
 	 * 
-	 * @param mailId
-	 * @return
+	 * @param mailId - the mail id
+	 * @return {@link Result}
 	 */
 	@Transactional
 	public static Result updateExpTime(Long mailId){
@@ -239,11 +262,12 @@ public class MailController extends Controller{
 	}
 	
 	/**
+	 * This method loads the available domains, users mails and produces a ok request.
 	 * 
-	 * @param form
-	 * @param userId
-	 * @return
+	 * @param form - the form to show
+	 * @return {@link Result}
 	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private static Result sendOk(Form form){
 		List<Mail> mails = Mail.getMails(Long.valueOf(session().get("id")));
 		List<Domain> domains = Domain.getDomains();
@@ -251,11 +275,32 @@ public class MailController extends Controller{
 		return ok(views.html.mail.render(form,mails,domains,validTime));
 	}
 	
+	/**
+	 * This method loads the available domains, users mails and produces a bad request.
+	 * 
+	 * @param form - the form to show
+	 * @return {@link Result}
+	 */
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private static Result badRequest(Form form){
 		List<Mail> mails = Mail.getMails(Long.valueOf(session().get("id")));
 		List<Domain> domains = Domain.getDomains();
 		
 		return badRequest(views.html.mail.render(form,mails,domains,validTime));
+	}
+	
+	/**
+	 * 
+	 */
+	@Transactional
+	public static void checkValidMail(){
+		List<Mail> mails = Mail.getMails();	
+		EntityManager em = JPA.em("default");
+		Timestamp now = new Timestamp(DateTime.now().getMillis());
+		for(Mail mail : mails){
+			mail.expires.after(now);
+			mail.delete();
+		}
 	}
 	
 }
