@@ -60,31 +60,37 @@
                             @mail.address&#64;@mail.domain.name
                         </td>
                         <td>
-                        	@if(mail.expires == new java.sql.Timestamp(3600)){
-                        		@mail.expires
+                        	@if(mail.expires.before(new java.sql.Timestamp(10000))){
+                        		unlimited
                         	}else{
-                            	unlimited
+                            	@mail.expires
                             }
                         </td>
                         <td>
                         	@helper.form(routes.MailController.remove(mail.id)) {
                         		<button type="submit" class="btn" name="remove"><p class="icon-remove"></p></button>
 								<!-- <a data-toggle="modal" href="#" class="btn btn-primary btn-large">Launch demo modal</a> -->
-								<button type="button" data-toggle="modal" class="btn" data-target="#renameusermail"><p class="icon-edit"></button>
-								<button type="button" data-toggle="modal" class="btn" data-target="#example"><p class="icon-time"></button>
+								<button type="button" data-toggle="modal" class="btn" data-target="#edit@mail.id"><p class="icon-edit"></button>
+								<button type="button" data-toggle="modal" class="btn" data-target="#time@mail.id"><p class="icon-time"></button>
                         		<!-- <button type="submit" class="btn" name="extend"></button> -->
                         	}
                         </td>
                     </tr>
                 
-                				<div id="example" class="modal hide fade in" style="display: none; ">
+                				<div id="time@mail.id" class="modal hide fade in" style="display: none; ">
 						            <div class="modal-header">
 						              <a class="close" data-dismiss="modal">X</a>
 						              <h3>Extend the expiration time</h3>
 						            </div>
 						            @helper.form(routes.MailController.updateExpTime(mail.id)) {
 						            <div class="modal-body">
-						            	<span>Expires on @mail.expires</span>
+						            	<span>Expires on
+						            	@if(mail.expires.before(new java.sql.Timestamp(10000))){
+			                        		unlimited
+			                        	}else{
+			                            	@mail.expires
+			                            }
+						            	</span>
 						            	<p>Expiration Time:</p>
 										<select class="span1" name="expires">
 							            	@validTime.map { validTime =>
@@ -99,7 +105,7 @@
 						            }
 						        </div>
 						        
-						        <div id="renameusermail" class="modal hide fade in" style="display: none; ">
+						        <div id="edit@mail.id" class="modal hide fade in" style="display: none; ">
 						            <div class="modal-header">
 						              <a class="close" data-dismiss="modal">X</a>
 						              <h3>Rename Mail-Address</h3>
