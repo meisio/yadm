@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.Persistence;
 
 import org.joda.time.DateTime;
 
@@ -40,7 +41,7 @@ public class MailController extends Controller{
 		public void run() {
 			checkValidMail();
 			try {
-				Thread.sleep(500);
+				Thread.sleep(10000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -294,13 +295,18 @@ public class MailController extends Controller{
 	 */
 	@Transactional
 	public static void checkValidMail(){
+		EntityManager em = Persistence.createEntityManagerFactory("defaultPersistenceUnit").createEntityManager();
+		JPA.bindForCurrentThread(em);
+		em.getTransaction().begin();
+		
 		List<Mail> mails = Mail.getMails();	
-		EntityManager em = JPA.em("default");
 		Timestamp now = new Timestamp(DateTime.now().getMillis());
 		for(Mail mail : mails){
-			mail.expires.after(now);
-			mail.delete();
+			if(mail.expires.before(now) && !mail.expires.equals(new Timestamp(0)))
+				mail.delete();
 		}
+		
+		em.getTransaction().commit();
 	}
 	
 }

@@ -1,5 +1,6 @@
 package models;
 
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.List;
 
@@ -18,7 +19,12 @@ import play.db.jpa.JPA;
 import common.MailServerUserManagment;
 
 @Entity
-public class Mail {
+public class Mail implements Serializable{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -55,7 +61,7 @@ public class Mail {
 	}
 	
 	public void delete(){
-		JPA.em().remove(this);
+		JPA.em().remove(JPA.em().getReference(Mail.class, id));
 		MailServerUserManagment.getInstance().removeUser(address, domain.name);
 	}
 	
