@@ -44,6 +44,7 @@ public class Global extends GlobalSettings{
 	 */
 	private void initMailClient() {
 		mc.setHost(msum.getDomain());
+		msum.addUser(msum.getDomain(), msum.getDefaultUsername(), msum.getDefaultPassword());
 		mc.setCredentials(msum.getDefaultUsername(), msum.getDefaultPassword());
 	}
 

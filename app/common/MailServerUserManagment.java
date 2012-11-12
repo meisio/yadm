@@ -74,7 +74,7 @@ public class MailServerUserManagment {
 	 * @param host - host part of an email
 	 * @param password - password of the mail account
 	 */
-	public synchronized void addUser(String user, String host, String password){
+	public synchronized void addUser(String host, String user, String password){
 		String userKey = getUserKey(user, host);
 		users.put(userKey, password);
 		writeUserFile();
